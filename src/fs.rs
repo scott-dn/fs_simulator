@@ -2,6 +2,7 @@ use std::{collections::BTreeMap, fmt::Display};
 
 pub struct DirManager {
     df_dir: String,
+    total_dir: u16,
     root_dir: Node,
 }
 
@@ -9,6 +10,7 @@ impl DirManager {
     pub fn new() -> Self {
         Self {
             df_dir: "root".into(),
+            total_dir: 0,
             root_dir: Node::new(),
         }
     }
@@ -36,11 +38,15 @@ impl DirManager {
     }
 
     pub fn handle_mkdir(&mut self, dir: String) -> Result<(), &str> {
+        if self.total_dir >= 5000 {
+            return Err("Total directories should not exceed 5000");
+        }
         let node = self.get_node_mut(&self.df_dir.clone()).unwrap();
         if node.child.contains_key(&dir) {
             return Err("Subdirectory already exists");
         }
         node.child.insert(dir, Node::new());
+        self.total_dir += 1;
         Ok(())
     }
 

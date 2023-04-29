@@ -44,7 +44,12 @@ fn process_dir(dir_manager: &DirManager, file: &mut File) {
             if i > 0 && i % 10 == 0 {
                 file.write_all(b"\n").unwrap();
             }
-            file.write_all(format!("{dir: <8}").as_bytes()).unwrap();
+            // end of line
+            if i > 0 && (i % 9 == 0) || i == sub_dir.len() - 1 {
+                file.write_all(format!("{dir}").as_bytes()).unwrap();
+            } else {
+                file.write_all(format!("{dir: <8}").as_bytes()).unwrap();
+            }
         }
         file.write_all(b"\n").unwrap();
     } else {

@@ -45,8 +45,8 @@ impl DirManager {
     }
 
     pub fn handle_mv(&mut self, source: String, destination: String) -> Result<(), &str> {
-        let (src_raw, src_abs) = self.to_abs_path(&source);
-        if self.get_node(&src_abs).is_none() {
+        let df_node = self.get_node(&self.df_dir).unwrap();
+        if !df_node.child.contains_key(&source) {
             return Err("Subdirectory does not exist");
         }
 
@@ -64,7 +64,7 @@ impl DirManager {
         let df_node = self.get_node_mut(&self.df_dir.clone()).unwrap();
         let src_node = df_node.child.remove(&source).unwrap();
         if let Some(des_node) = self.get_node_mut(&des_abs) {
-            des_node.child.insert(src_raw, src_node);
+            des_node.child.insert(source, src_node);
         } else {
             let parent_des_abs = &Self::get_parent_path(&des_abs);
             let parent_des_node = self.get_node_mut(parent_des_abs).unwrap();
